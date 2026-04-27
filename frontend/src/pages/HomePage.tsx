@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { roomsApi } from '../api/reservationApi';
 import type { Room } from '../types';
+import RoomModal from '../components/RoomModal';
 
 const FEATURES = [
   { icon: 'spa', title: 'Luxury Spa', desc: 'Rejuvenate with our world-class treatments and wellness programs.' },
@@ -18,10 +19,24 @@ const TESTIMONIALS = [
 
 export default function HomePage() {
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [search, setSearch] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
 
   useEffect(() => {
     roomsApi.getAll().then(setRooms).catch(() => {});
   }, []);
+
+  const filteredRooms = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    if (!q) return rooms;
+    return rooms.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.type.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q) ||
+        r.amenities.some((a) => a.toLowerCase().includes(q)),
+    );
+  }, [rooms, search]);
 
   return (
     <div>
@@ -95,44 +110,101 @@ export default function HomePage() {
       {/* Rooms */}
       <section id="rooms" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <p className="text-hotel-accent text-sm font-medium tracking-widest uppercase mb-2">Accommodations</p>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-hotel-dark">Our Rooms & Suites</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {rooms.map((room) => (
-              <div key={room.id} className="card overflow-hidden group hover:shadow-xl transition-all duration-300">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={room.imageUrl}
-                    alt={room.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600'; }}
-                  />
-                  <div className="absolute top-3 right-3 bg-hotel-accent text-white text-xs font-bold px-2.5 py-1 rounded-full">
-                    ${room.pricePerNight}/night
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-hotel-dark mb-1">{room.name}</h3>
-                  <p className="text-xs text-gray-500 mb-3 line-clamp-2">{room.description}</p>
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {room.amenities.slice(0, 3).map((a) => (
-                      <span key={a} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{a}</span>
-                    ))}
-                  </div>
-                  <Link
-                    to="/reserve"
-                    className="block text-center bg-hotel-dark hover:bg-hotel-navy text-white text-sm font-medium py-2 rounded-lg transition-colors"
-                  >
-                    Book Now
-                  </Link>
-                </div>
-              </div>
-            ))}
+
+          {/* Search */}
+          <div className="max-w-md mx-auto mb-10">
+            <div className="relative">
+              <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl">search</span>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name, type, or amenity…"
+                className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-hotel-accent/40 focus:border-hotel-accent text-sm transition"
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label="Clear search"
+                >
+                  <span className="material-icons text-xl">close</span>
+                </button>
+              )}
+            </div>
           </div>
+
+          {filteredRooms.length === 0 ? (
+            <div className="text-center py-16 text-gray-400">
+              <span className="material-icons text-5xl mb-3 block">search_off</span>
+              <p className="text-lg font-medium">No rooms match "{search}"</p>
+              <button onClick={() => setSearch('')} className="mt-3 text-hotel-accent hover:underline text-sm">
+                Clear search
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredRooms.map((room) => (
+                <div
+                  key={room.id}
+                  className="card overflow-hidden group hover:shadow-xl transition-all duration-300 cursor-pointer"
+                  onClick={() => setSelectedRoom(room)}
+                >
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={room.imageUrl}
+                      alt={room.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600'; }}
+                    />
+                    <div className="absolute top-3 right-3 bg-hotel-accent text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                      ${room.pricePerNight}/night
+                    </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                      <span className="material-icons text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg">open_in_full</span>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-hotel-dark mb-1">{room.name}</h3>
+                    <p className="text-xs text-gray-500 mb-3 line-clamp-2">{room.description}</p>
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {room.amenities.slice(0, 3).map((a) => (
+                        <span key={a} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">{a}</span>
+                      ))}
+                      {room.amenities.length > 3 && (
+                        <span className="bg-gold-50 text-hotel-accent text-xs px-2 py-0.5 rounded-full">
+                          +{room.amenities.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        className="flex-1 text-center border border-hotel-dark text-hotel-dark hover:bg-hotel-dark hover:text-white text-sm font-medium py-2 rounded-lg transition-colors"
+                        onClick={(e) => { e.stopPropagation(); setSelectedRoom(room); }}
+                      >
+                        View Details
+                      </button>
+                      <Link
+                        to="/reserve"
+                        className="flex-1 text-center bg-hotel-dark hover:bg-hotel-navy text-white text-sm font-medium py-2 rounded-lg transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Book Now
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
+
+      {selectedRoom && <RoomModal room={selectedRoom} onClose={() => setSelectedRoom(null)} />}
 
       {/* Testimonials */}
       <section className="py-20 bg-hotel-navy">
