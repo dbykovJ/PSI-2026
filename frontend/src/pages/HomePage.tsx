@@ -29,16 +29,16 @@ export default function HomePage() {
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920')" }}
+          style={{ backgroundImage: "url('https://www.slovakia.com/wp-content/uploads/bigstock-Poprad-with-Vysoke-Tatry-High-16125689-1350x900.jpg')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-hotel-dark/70 via-hotel-dark/50 to-hotel-dark/80" />
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4 animate-fade-in">
           <p className="text-gold-300 text-sm font-medium tracking-widest uppercase mb-4">Welcome to</p>
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-            Grand Luxe Hotel
+            Grand Poprad Hotel
           </h1>
           <p className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Where every moment becomes an unforgettable memory. Experience the pinnacle of luxury in the heart of the city.
+            Where every moment becomes an unforgettable memory. Experience the pinnacle of luxury in the heart of the Tatra Mountains.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

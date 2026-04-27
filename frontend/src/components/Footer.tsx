@@ -8,7 +8,7 @@ export default function Footer() {
               <div className="w-8 h-8 bg-hotel-accent rounded-full flex items-center justify-center">
                 <span className="material-icons text-white text-sm">hotel</span>
               </div>
-              <span className="font-serif text-lg font-bold">Grand Luxe Hotel</span>
+              <span className="font-serif text-lg font-bold">Grand Poprad Hotel</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
               Experience unparalleled luxury in the heart of the city. Every stay is a masterpiece.
@@ -19,7 +19,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex items-center gap-2"><span className="material-icons text-sm">location_on</span> 1 Royal Avenue, Bratislava</li>
               <li className="flex items-center gap-2"><span className="material-icons text-sm">phone</span> +421 900 000 000</li>
-              <li className="flex items-center gap-2"><span className="material-icons text-sm">email</span> info@grandluxe.sk</li>
+              <li className="flex items-center gap-2"><span className="material-icons text-sm">email</span> info@grandpoprad.sk</li>
             </ul>
           </div>
           <div>
@@ -32,7 +32,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-white/10 pt-6 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Grand Luxe Hotel. All rights reserved.
+          © {new Date().getFullYear()} Grand Poprad Hotel. All rights reserved. Created by PeakReserve.
         </div>
       </div>
     </footer>

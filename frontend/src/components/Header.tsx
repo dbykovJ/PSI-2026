@@ -13,7 +13,7 @@ export default function Header() {
               <span className="material-icons text-white text-xl">hotel</span>
             </div>
             <div>
-              <p className="font-serif text-xl font-bold text-white leading-none">Grand Luxe</p>
+              <p className="font-serif text-xl font-bold text-white leading-none">Grand Poprad</p>
               <p className="text-xs text-gold-300 tracking-widest uppercase">Hotel & Spa</p>
             </div>
           </Link>
